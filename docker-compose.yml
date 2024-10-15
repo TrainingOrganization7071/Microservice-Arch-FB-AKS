@@ -5,10 +5,20 @@ services:
     image: frontapp
     build:
       context: ./frontapp
+      args:
+        REACT_APP_BOOKS_API: ${REACT_APP_BOOKS_API}
+        REACT_APP_UNIVERSITIES_API: ${REACT_APP_UNIVERSITIES_API}
+        REACT_APP_NEWS_API: ${REACT_APP_NEWS_API}
+        REACT_APP_MOVIES_API: ${REACT_APP_MOVIES_API}
     environment:
       NODE_ENV: production
     ports:
       - 3000:3000
+    depends_on:
+      - books
+      - universities
+      - news
+      - movies
 
   books:
     image: books

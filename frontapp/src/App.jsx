@@ -26,6 +26,13 @@ function App() {
             </li>
           </ul>
         </nav>
+        <div>
+          {
+            JSON.stringify({
+              movies:  process.env.REACT_APP_MOVIES_API
+            })
+          }
+        </div>
         <Routes>
           <Route path="/Books" element={<BooksList />} />
           <Route path="/Universities" element={<UniversitiesList/>} />
