@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: books-deployment
+  labels:
+    app: books
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: books
+  template:
+    metadata:
+      labels:
+        app: books
+    spec:
+      containers:
+      - name: booksserver
+        image: fouadallaoui/books-microservice:latest
+        ports:
+        - containerPort: 3001
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: books-service
+
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3001
+  selector:
+    app: books
+
+
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: books-service
+#
+#spec:
+#  selector:
+#    app: books
+#  type: LoadBalancer
+#  ports:
+#    - protocol: TCP
+#      port: 80  # The port exposed by the service
+#      targetPort: 3001  # The port on which the container is listening
+

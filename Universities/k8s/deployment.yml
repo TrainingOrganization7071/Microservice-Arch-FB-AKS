@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: universities-deployment
+  labels:
+    app: universities
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: universities
+  template:
+    metadata:
+      labels:
+        app: universities
+    spec:
+      containers:
+      - name: universitiesserver
+        image: fouadallaoui/universities-microservice:latest
+        ports:
+        - containerPort: 3002
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: universities-service
+
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3002
+  selector:
+    app: universities
+
+
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: universities-service
+#
+#spec:
+#  selector:
+#    app: universities
+#  type: LoadBalancer
+#  ports:
+#    - protocol: TCP
+#      port: 80  # The port exposed by the service
+#      targetPort: 3001  # The port on which the container is listening
+

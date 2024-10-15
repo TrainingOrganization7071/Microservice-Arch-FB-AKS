@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-deployment
+  labels:
+    app: news
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: news
+  template:
+    metadata:
+      labels:
+        app: news
+    spec:
+      containers:
+      - name: newsserver
+        image: fouadallaoui/news-microservice:latest
+        ports:
+        - containerPort: 3003
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: news-service
+
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3003
+  selector:
+    app: news
+
+
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: news-service
+#
+#spec:
+#  selector:
+#    app: news
+#  type: LoadBalancer
+#  ports:
+#    - protocol: TCP
+#      port: 80  # The port exposed by the service
+#      targetPort: 3001  # The port on which the container is listening
+

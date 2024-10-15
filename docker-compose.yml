@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  frontapp:
+    image: frontapp
+    build:
+      context: ./frontapp
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+
+  books:
+    image: books
+    build:
+      context: ./Books
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3001:3001
+
+  universities:
+    image: universities
+    build:
+      context: ./Universities
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3002:3002
+
+  news:
+    image: news
+    build:
+      context: ./News
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3003:3003
+
+  movies:
+    image: movies
+    build:
+      context: ./Movies
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3004:3004
