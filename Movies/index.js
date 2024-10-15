@@ -22,7 +22,7 @@ var apiURL = "https://api.themoviedb.org/3/discover/movie?api_key=e6f982ddd401b7
 
 
 app.get('/', (req, res) => {
-    res.send('Hello, world --- Movies Microservice!');
+    res.send('Hello, world --- Movies Microservice 7071!');
 });
 
 // Fetch all books from the external API
