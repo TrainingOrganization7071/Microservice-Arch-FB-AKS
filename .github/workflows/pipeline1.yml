@@ -1,12 +1,12 @@
 name: CI/CD Microservices Pipeline
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  #push:
+  #  branches:
+  #    - master
+  #pull_request:
+  #  branches:
+  #    - master
   workflow_dispatch:
 
 
@@ -66,6 +66,7 @@ jobs:
           name: ${{ matrix.service }}-build
           path: ./${{ matrix.service }}
 
+
 # Deploy All Microservice docker images to DockerHub      
   Deploy_To_DockerHub:
     runs-on: ubuntu-latest
@@ -110,9 +111,6 @@ jobs:
           context: ./${{matrix.service}}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
-
-
-
 
 
 ## Deploy All Microservice docker images to ACR
