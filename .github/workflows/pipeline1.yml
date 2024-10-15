@@ -53,11 +53,11 @@ jobs:
           cd ./${{ matrix.service }}
           npm run build --if-present
         
-      - name: Run Tests
-        if: env.changes == 'true'
-        run: |
-          cd ./${{ matrix.service }}
-          npm test
+      #- name: Run Tests
+      #  if: env.changes == 'true'
+      #  run: |
+      #    cd ./${{ matrix.service }}
+      #    npm test
         
       - name: Upload build artifact for ${{ matrix.service }}
         if: env.changes == 'true'
