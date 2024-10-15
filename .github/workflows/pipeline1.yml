@@ -1,12 +1,12 @@
 name: CI/CD Microservices Pipeline
 
 on:
-  #push:
-  #  branches:
-  #    - master
-  #pull_request:
-  #  branches:
-  #    - master
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
 
 
@@ -73,6 +73,8 @@ jobs:
     strategy:
         matrix:
           service: ['Books', 'Movies', 'News', 'Universities']
+    env:
+      IMAGE_NAME: books
     steps:
       - name: Checkout
         uses: actions/checkout@v4
