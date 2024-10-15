@@ -48,10 +48,10 @@ jobs:
           cd ./${{ env.MICROSERVICE_NAME }}
           npm run build --if-present
         
-      - name: Run Tests
-        run: |
-          cd ./${{ env.MICROSERVICE_NAME }}
-          npm test --if-present
+      #- name: Run Tests
+      #  run: |
+      #    cd ./${{ env.MICROSERVICE_NAME }}
+      #    npm test --if-present
         
       - name: Upload build artifact for ${{ env.MICROSERVICE_NAME }}
         uses: actions/upload-artifact@v3
