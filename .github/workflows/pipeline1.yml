@@ -57,7 +57,7 @@ jobs:
       #  if: env.changes == 'true'
       #  run: |
       #    cd ./${{ matrix.service }}
-      #    npm test
+      #    npm run test
         
       - name: Upload build artifact for ${{ matrix.service }}
         if: env.changes == 'true'
