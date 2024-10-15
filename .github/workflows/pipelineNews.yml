@@ -1,4 +1,4 @@
-name: Books Microservice Pipeline
+name: News Microservice Pipeline
 
 on:
   push:

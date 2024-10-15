@@ -1,4 +1,4 @@
-name: Books Microservice Pipeline
+name: Movies Microservice Pipeline
 
 on:
   push:
