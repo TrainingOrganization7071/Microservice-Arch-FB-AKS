@@ -108,7 +108,7 @@ jobs:
         with:
           context: ./${{matrix.service}}
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}-microservice:${{github.run_id}}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-microservice:${{github.run_id}}
 
 
 
