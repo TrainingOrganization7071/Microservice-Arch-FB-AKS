@@ -1,0 +1,32 @@
+
+name: Check for Changes
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full commit history, not a shallow clone
+
+      - name: Check for changes in microservice
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
+            echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+
+
+
+
+          
