@@ -23,21 +23,10 @@ jobs:
         node-version: ['20.x']
         service: ['Books', 'Movies', 'News', 'Universities']
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Fetch full commit history, not a shallow clone
-
       - name: Check for changes in microservice
-        id: check_changes
-        run: |
-          if git rev-parse --verify HEAD^ ; then
-            # Compare against the previous commit
-            git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/" && echo "changes=true" >> $GITHUB_ENV || echo "changes=false" >> $GITHUB_ENV
-          else
-            # First commit or no prior commit, compare against an empty tree
-            git diff --name-only $(git hash-object -t tree /dev/null) HEAD | grep -q "^${{ matrix.service }}/" && echo "changes=true" >> $GITHUB_ENV || echo "changes=false" >> $GITHUB_ENV
-          fi
+        uses: ./.github/workflows/check-changes.yml
+        with:
+          service: ${{ matrix.service }}
 
       - name: Use Node.js
         if: env.changes == 'true'
@@ -82,19 +71,10 @@ jobs:
           docker_image_name: ['books', 'movies', 'news', "universities"]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch full commit history, not a shallow clone
-
       - name: Check for changes in microservice
-        id: check_changes
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
-            echo "changes=true" >> $GITHUB_ENV
-          else
-            echo "changes=false" >> $GITHUB_ENV
-          fi
+        uses: ./.github/workflows/check-changes.yml
+        with:
+          service: ${{ matrix.service }}
 
       - name: Set up QEMU
         if: env.changes == 'true'
@@ -133,19 +113,10 @@ jobs:
         shell: bash
         
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch full commit history, not a shallow clone
-
       - name: Check for changes in microservice
-        id: check_changes
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
-            echo "changes=true" >> $GITHUB_ENV
-          else
-            echo "changes=false" >> $GITHUB_ENV
-          fi
+        uses: ./.github/workflows/check-changes.yml
+        with:
+          service: ${{ matrix.service }}
         
       - name: Docker Login
         uses: azure/docker-login@v1
@@ -171,21 +142,10 @@ jobs:
         docker_image_name: ['books','movies', 'news', 'universities']
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Fetch full commit history, not a shallow clone
-
       - name: Check for changes in microservice
-        id: check_changes
-        run: |
-          if git rev-parse --verify HEAD^ ; then
-            # Compare against the previous commit
-            git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/" && echo "changes=true" >> $GITHUB_ENV || echo "changes=false" >> $GITHUB_ENV
-          else
-            # First commit or no prior commit, compare against an empty tree
-            git diff --name-only $(git hash-object -t tree /dev/null) HEAD | grep -q "^${{ matrix.service }}/" && echo "changes=true" >> $GITHUB_ENV || echo "changes=false" >> $GITHUB_ENV
-          fi
+        uses: ./.github/workflows/check-changes.yml
+        with:
+          service: ${{ matrix.service }}
 
       - name: Install Azure CLI
         run: |
