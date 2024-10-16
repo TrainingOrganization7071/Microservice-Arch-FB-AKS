@@ -22,7 +22,7 @@ var apiURL = "http://api.mediastack.com/v1/news?access_key=72476354d30be85a28844
 
 
 app.get('/', (req, res) => {
-    res.send('Hello, world --- News Microservice 7071!');
+    res.send('Hello, world --- News Microservice 7171!');
 });
 
 // Fetch all books from the external API

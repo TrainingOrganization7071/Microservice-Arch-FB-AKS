@@ -22,7 +22,7 @@ var apiURL = "http://universities.hipolabs.com/search?country=United+States"
 
 
 app.get('/', (req, res) => {
-    res.send('Hello, world --- Univesities Microservice 7071!');
+    res.send('Hello, world --- Univesities Microservice 7171!');
 });
 
 // Fetch all books from the external API
