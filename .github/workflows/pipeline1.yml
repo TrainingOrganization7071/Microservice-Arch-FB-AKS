@@ -272,14 +272,14 @@ jobs:
           # Create Kubernetes secret for ACR
       
       # Create Kubernetes secret for ACR
-      - name: Create ACR secret in AKS
-        if: env.changes == 'true'
-        run: |
-          kubectl create secret docker-registry acr-secret \
-            --docker-server=${{ env.ACR_URL }} \
-            --docker-username=${{ secrets.ACR_USERNAME }} \
-            --docker-password=${{ secrets.ACR_PASSWORD }} \
-            --docker-email=${{ env.DOCKER_EMAIL }}
+      #- name: Create ACR secret in AKS
+      #  if: env.changes == 'true'
+      #  run: |
+      #    kubectl create secret docker-registry acr-secret \
+      #      --docker-server=${{ env.ACR_URL }} \
+      #      --docker-username=${{ secrets.ACR_USERNAME }} \
+      #      --docker-password=${{ secrets.ACR_PASSWORD }} \
+      #      --docker-email=${{ env.DOCKER_EMAIL }}
            
       # Replace image placeholders in deployment.yml
       - name: Replace image placeholders in deployment.yml
