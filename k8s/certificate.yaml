@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tls-secret
+  namespace: default  # Replace with your namespace if different
+spec:
+  secretName: tls-secret  # The name of the secret that will store the certificate
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: thedomain.com
+  dnsNames:
+  - thedomain.com # Add any subdomains as needed
+
+
+

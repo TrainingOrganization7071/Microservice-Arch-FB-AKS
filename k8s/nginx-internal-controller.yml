@@ -11,5 +11,54 @@ spec:
 
 
 
+#---
+#apiVersion: approuting.kubernetes.azure.com/v1alpha1
+#kind: NginxIngressController
+#metadata:
+#  name: nginx-internal-static
+#spec:
+#  ingressClassName: nginx-internal-static
+#  controllerNamePrefix: nginx-internal-static
+#  loadBalancerAnnotations: 
+#    # Internal Load Balancer
+#    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+#    # Assigning a static IP address
+#    service.beta.kubernetes.io/azure-load-balancer-ipv4: "10.10.0.10"
+#    # Idle timeout settings for connections (can adjust based on app requirements)
+#    service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: "30"
+#    # Enable zone redundancy for load balancer
+#    service.beta.kubernetes.io/azure-load-balancer-zones: "1,2,3"
+#  replicaCount: 3  # Ensure high availability by running multiple replicas
+#  securityContext:
+#    runAsUser: 101  # Non-root user for security
+#    runAsGroup: 101
+#    fsGroup: 101
+#  resources:
+#    limits:
+#      cpu: "500m"  # Set CPU limits based on the load expected
+#      memory: "512Mi"
+#    requests:
+#      cpu: "250m"
+#      memory: "256Mi"
+#  nodeSelector:
+#    kubernetes.io/os: linux
+#  affinity:
+#    podAntiAffinity:
+#      preferredDuringSchedulingIgnoredDuringExecution:
+#      - weight: 100
+#        podAffinityTerm:
+#          labelSelector:
+#            matchExpressions:
+#            - key: app.kubernetes.io/name
+#              operator: In
+#              values:
+#              - nginx-internal-static
+#          topologyKey: "kubernetes.io/hostname"
+
+
+
+
+
+
 
 
