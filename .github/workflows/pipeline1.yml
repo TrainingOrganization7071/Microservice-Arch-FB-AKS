@@ -256,16 +256,18 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           admin: 'false'
           use-kubelogin: 'true'
+      
+      # Install kubectl manually
+      - name: Install kubectl
+        if: env.changes == 'true'
+        run: |
+          sudo az aks install-cli
 
       # Get Nodes - test
       - name: Get Nodes
-        if: env.changes == 'true' 
-        uses: azure/kubectl@v2
-        with:
-          command: get
-          args: 'nodes'
-        #run: |
-        #  kubectl get nodes
+        if: env.changes == 'true'
+        run: |
+          kubectl get nodes
 
       # Deploys application based on given manifest file
       - name: Deploys application
