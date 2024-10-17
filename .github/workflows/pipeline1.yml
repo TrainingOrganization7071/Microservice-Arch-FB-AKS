@@ -8,12 +8,23 @@ on:
     branches:
       - master
   workflow_dispatch:
+      inputs:
+        services:
+          description: 'List of microservices'
+          required: false
+          default: 'Books,Movies,News,Universities'
+        docker_image_names:
+          description: 'List of Docker image names'
+          required: false
+          default: 'books,movies,news,universities'
+  
   
 env: 
   DOCKER_IMAGE_TAG: 'latest'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
   ACR_URL: 'containerRegistry1jepjuplm.azurecr.io' # ACR service url
+
 
 
 jobs:
@@ -23,7 +34,7 @@ jobs:
     strategy:
       matrix:
         node-version: ['20.x']
-        service: ['Books', 'Movies', 'News', 'Universities']
+        service: ${{ fromJson(inputs.services) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
