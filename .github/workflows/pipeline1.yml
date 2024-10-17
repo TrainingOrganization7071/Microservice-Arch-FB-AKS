@@ -1,18 +1,19 @@
 name: CI/CD Microservices Pipeline
 
 on:
-  #push:
-  #  branches:
-  #    - master
-  #pull_request:
-  #  branches:
-  #    - master
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
   
 env: 
   DOCKER_IMAGE_TAG: 'latest'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
+  ACR_URL: 'containerregistry1dmnprfwh.azurecr.io' # ACR service url
 
 
 jobs:
@@ -122,11 +123,11 @@ jobs:
         with:
           service: ${{ matrix.service }}
           
-      - name: Azure ACR [Docker] Login
+      - name: Azure ACR [Docker Rejistry] Login
         if: env.changes == 'true'
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ secrets.ACR_URL }}
+          login-server: ${{ env.ACR_URL }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
         
@@ -146,12 +147,12 @@ jobs:
       - name: Tag Docker Image for ACR
         if: env.changes == 'true'
         run: |
-          docker tag ${{ matrix.docker_image_name }}-microservice:latest ${{ secrets.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
+          docker tag ${{ matrix.docker_image_name }}-microservice:latest ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
   
       - name: Push Docker Image to ACR
         if: env.changes == 'true'
         run: |
-          docker push ${{ secrets.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
+          docker push ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
            
 
 # Deploy to Azure Kubernetes Cluster
