@@ -17,16 +17,16 @@ env:
   ACR_URL: 'containerRegistry1jepjuplm.azurecr.io' # ACR service url
 
 # Define a reusable matrix using YAML anchors
-#x-matrix: &matrix
-#  include:
-#    - service: 'Books'
-#      docker_image_name: 'books'
-#    - service: 'Movies'
-#      docker_image_name: 'movies'
-#    - service: 'News'
-#      docker_image_name: 'news'
-#    - service: 'Universities'
-#      docker_image_name: 'universities'
+x-matrix: &matrix
+  include:
+    - service: 'Books'
+      docker_image_name: 'books'
+    - service: 'Movies'
+      docker_image_name: 'movies'
+    - service: 'News'
+      docker_image_name: 'news'
+    - service: 'Universities'
+      docker_image_name: 'universities'
 
 
 jobs:
