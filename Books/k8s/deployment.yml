@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: booksserver
-        image: containerRegistry1jepjuplm.azurecr.io/books-microservice:latest
+        image: ACR_URL_PLACEHOLDER/books-microservice:IMAGE_TAG_PLACEHOLDER
         ports:
         - containerPort: 3001
         
