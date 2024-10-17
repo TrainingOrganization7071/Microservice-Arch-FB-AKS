@@ -1,0 +1,19 @@
+[
+    {
+      "service": "Books",
+      "docker_image_name": "books"
+    },
+    {
+      "service": "Movies",
+      "docker_image_name": "movies"
+    },
+    {
+      "service": "News",
+      "docker_image_name": "news"
+    },
+    {
+      "service": "Universities",
+      "docker_image_name": "universities"
+    }
+  ]
+  
