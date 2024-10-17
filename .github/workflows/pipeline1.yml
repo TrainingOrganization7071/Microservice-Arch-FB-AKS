@@ -281,11 +281,11 @@ jobs:
             --docker-password=${{ secrets.ACR_PASSWORD }} \
             --docker-email=${{ env.DOCKER_EMAIL }}
            
-      # Replace the placeholders in the Kubernetes manifest with ACR image and tag
+      # Replace image placeholders in deployment.yml
       - name: Replace image placeholders in deployment.yml
         if: env.changes == 'true'
         run: |
-          sed -i 's|ACR_URL_PLACEHOLDER|${{ env.ACR_URL }}|g' ./${{ matrix.service }}/k8s/deployment.yml
+          sed -i 's|ACR_URL_PLACEHOLDER|${{ secrets.ACR_URL }}|g' ./${{ matrix.service }}/k8s/deployment.yml
           sed -i 's|IMAGE_TAG_PLACEHOLDER|${{ env.DOCKER_IMAGE_TAG }}|g' ./${{ matrix.service }}/k8s/deployment.yml
 
       # Deploys application based on given manifest file
