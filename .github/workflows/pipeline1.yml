@@ -71,13 +71,14 @@ jobs:
       #  run: |
       #    cd ./${{ matrix.service }}
       #    npm run test
-        
-      - name: Upload build artifact for ${{ matrix.service }}
-        if: env.changes == 'true' 
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.service }}-build
-          path: ./${{ matrix.service }}
+      
+      # Upload the build artifacts
+      #- name: Upload build artifact for ${{ matrix.service }}
+      #  if: env.changes == 'true' 
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: ${{ matrix.service }}-build
+      #    path: ./${{ matrix.service }}
 
 
 # Deploy All Microservice docker images to DockerHub      
