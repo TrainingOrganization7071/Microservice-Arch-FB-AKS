@@ -184,12 +184,12 @@ jobs:
       - name: Build Docker Image
         if: env.changes == 'true' 
         run: |
-          docker build -t ${{ matrix.docker_image_name }}-microservice:latest ./${{ matrix.service }}
+          docker build -t ${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }} ./${{ matrix.service }}
       
       - name: Tag Docker Image for ACR
         if: env.changes == 'true' 
         run: |
-          docker tag ${{ matrix.docker_image_name }}-microservice:latest ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
+          docker tag ${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}  ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
   
       - name: Push Docker Image to ACR
         if: env.changes == 'true' 
@@ -268,6 +268,13 @@ jobs:
         if: env.changes == 'true'
         run: |
           kubectl get nodes
+
+      # Replace the placeholders in the Kubernetes manifest with ACR image and tag
+      - name: Replace image placeholders in deployment.yml
+        if: env.changes == 'true'
+        run: |
+          sed -i 's|ACR_URL_PLACEHOLDER|${{ env.ACR_URL }}|g' ./${{ matrix.service }}/k8s/deployment.yml
+          sed -i 's|IMAGE_TAG_PLACEHOLDER|${{ env.DOCKER_IMAGE_TAG }}|g' ./${{ matrix.service }}/k8s/deployment.yml
 
       # Deploys application based on given manifest file
       - name: Deploys application

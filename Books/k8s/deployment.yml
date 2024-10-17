@@ -20,9 +20,10 @@ spec:
     spec:
       containers:
       - name: booksserver
-        image: fouadallaoui/books-microservice:latest
+        image: ACR_URL_PLACEHOLDER/books-microservice:IMAGE_TAG_PLACEHOLDER
         ports:
         - containerPort: 3001
+        
         #livenessProbe:
         #  httpGet:
         #    path: /health
@@ -48,22 +49,6 @@ spec:
     targetPort: 3001
   selector:
     app: books
-
-
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: books-service
-#spec:
-#  selector:
-#    app: books
-#  type: LoadBalancer
-#  ports:
-#    - protocol: TCP
-#      port: 80  # The port exposed by the service
-#      targetPort: 3001  # The port on which the container is listening
-
 
 ---
 apiVersion: autoscaling/v2
