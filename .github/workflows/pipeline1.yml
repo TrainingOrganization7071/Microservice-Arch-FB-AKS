@@ -16,17 +16,6 @@ env:
   CLUSTER_NAME: 'aks-cluster'
   ACR_URL: 'containerRegistry1jepjuplm.azurecr.io' # ACR service url
 
-# Define a reusable matrix using YAML anchors
-x-matrix: &matrix
-  include:
-    - service: 'Books'
-      docker_image_name: 'books'
-    - service: 'Movies'
-      docker_image_name: 'movies'
-    - service: 'News'
-      docker_image_name: 'news'
-    - service: 'Universities'
-      docker_image_name: 'universities'
 
 
 jobs:
@@ -98,7 +87,15 @@ jobs:
         matrix:
           #service: ['Books', 'Movies', 'News', 'Universities']
           #docker_image_name: ['books', 'movies', 'news', "universities"]
-          <<: *matrix  # Reference the reusable matrix
+          include:
+            - service: 'Books'
+              docker_image_name: 'books'
+            - service: 'Movies'
+              docker_image_name: 'movies'
+            - service: 'News'
+              docker_image_name: 'news'
+            - service: 'Universities'
+              docker_image_name: 'universities'
 
     steps:
       - name: Checkout repository
