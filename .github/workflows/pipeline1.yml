@@ -98,15 +98,7 @@ jobs:
         matrix:
           #service: ['Books', 'Movies', 'News', 'Universities']
           #docker_image_name: ['books', 'movies', 'news', "universities"]
-          include: # Map a specific service to its corresponding docker_image_name
-            - service: 'Books'
-              docker_image_name: 'books'
-            - service: 'Movies'
-              docker_image_name: 'movies'
-            - service: 'News'
-              docker_image_name: 'news'
-            - service: 'Universities'
-              docker_image_name: 'universities'
+          <<: *matrix  # Reference the reusable matrix
 
     steps:
       - name: Checkout repository
