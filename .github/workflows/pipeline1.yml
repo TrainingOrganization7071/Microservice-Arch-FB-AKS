@@ -138,8 +138,17 @@ jobs:
     needs: Build
     strategy:
       matrix:
-        service: ['Books', 'Movies', 'News', 'Universities']
-        docker_image_name: ['books','movies', 'news', 'universities']  
+        #service: ['Books', 'Movies', 'News', 'Universities']
+        #docker_image_name: ['books', 'movies', 'news', "universities"]
+        include: # Map a specific service to its corresponding docker_image_name
+          - service: 'Books'
+            docker_image_name: 'books'
+          - service: 'Movies'
+            docker_image_name: 'movies'
+          - service: 'News'
+            docker_image_name: 'news'
+          - service: 'Universities'
+            docker_image_name: 'universities' 
 
     defaults:
       run:
@@ -198,8 +207,7 @@ jobs:
     strategy:
       matrix:
         service: ['Books', 'Movies', 'News', 'Universities']
-        docker_image_name: ['books','movies', 'news', 'universities']
-
+        
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
