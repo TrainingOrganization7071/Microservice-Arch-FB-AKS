@@ -32,7 +32,7 @@ jobs:
 
       - name: Check for changes in microservice
         id: check_changes
-        uses: ./.github/workflows/check-changes.yml
+        uses: ./.github/workflows/check-changes.yml@v1
         with:
           service: ${{ matrix.service }}
 
