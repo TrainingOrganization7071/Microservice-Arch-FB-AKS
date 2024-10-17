@@ -1,14 +1,14 @@
 name: Books Microservice Pipeline
 
 on:
-  push:
-    paths:
-      - 'Books/**'
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  #push:
+  #  paths:
+  #    - 'Books/**'
+  #  branches:
+  #    - master
+  #pull_request:
+  #  branches:
+  #    - master
   workflow_dispatch:
 
 env: 
