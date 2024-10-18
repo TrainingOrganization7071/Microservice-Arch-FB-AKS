@@ -14,7 +14,7 @@ env:
   DOCKER_IMAGE_TAG: 'latest'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
-  ACR_URL: 'containerRegistry1tqgsqhql.azurecr.io' # ACR service url
+  ACR_URL: 'containerregistry1sitcfvhr.azurecr.io' # ACR service url
 
 
 
