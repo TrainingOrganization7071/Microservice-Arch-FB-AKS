@@ -1,0 +1,279 @@
+name: CI/CD Microservices Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+    
+  
+env:
+  DOCKER_IMAGE_TAG: 'latest'
+  RESOURCE_GROUP: 'minimal_infra_auth'
+  CLUSTER_NAME: 'aks-cluster'
+  ACR_URL: 'containerregistry1sitcfvhr.azurecr.io' # ACR service url
+
+
+
+jobs:
+# Build and test all Microservices 
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['20.x']
+        service: ['Books', 'Movies', 'News', 'Universities']
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full commit history, not a shallow clone
+
+      #- name: Check for changes in microservice
+      #  id: check_changes
+      #  uses: ./.github/workflows/action.yml
+      #  with:
+      #    service: ${{ matrix.service }}
+
+      - name: Check for changes in microservice
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
+            echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+
+      - name: Use Node.js
+        if: env.changes == 'true' 
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+        
+      - name: Install dependencies
+        if: env.changes == 'true' 
+        run: |
+          cd ./${{ matrix.service }}
+          npm ci
+        
+      - name: Run Build
+        if: env.changes == 'true' 
+        run: |
+          cd ./${{ matrix.service }}
+          npm run build --if-present
+        
+      #- name: Run Tests
+      #  if: env.changes == 'true' 
+      #  run: |
+      #    cd ./${{ matrix.service }}
+      #    npm run test
+      
+      # Upload the build artifacts
+      #- name: Upload build artifact for ${{ matrix.service }}
+      #  if: env.changes == 'true' 
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: ${{ matrix.service }}-build
+      #    path: ./${{ matrix.service }}
+
+
+# Deploy All Microservice docker images to ACR
+  Deploy_To_ACR:
+    name: 'Build and Push to ACR'
+    runs-on: ubuntu-latest
+    needs: Build
+    strategy:
+      matrix:
+        include: # Map a specific service to its corresponding docker_image_name
+          - service: 'Books'
+            docker_image_name: 'books'
+          - service: 'Movies'
+            docker_image_name: 'movies'
+          - service: 'News'
+            docker_image_name: 'news'
+          - service: 'Universities'
+            docker_image_name: 'universities' 
+
+    defaults:
+      run:
+        shell: bash
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full commit history, not a shallow clone
+        
+      - name: Check for changes in microservice
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
+          echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+          
+      - name: Azure ACR [Docker Rejistry] Login
+        if: env.changes == 'true' 
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_URL }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+        
+      #- name: Set up Docker Buildx
+      #  if: env.changes == 'true' 
+      #  uses: docker/setup-buildx-action@v2
+      #  with:
+      #    push: true
+      #    tag: ${{ env.DOCKER_IMAGE_TAG }}
+      #    file: ./${{ matrix.service }}/Dockerfile
+
+      - name: Build Docker Image
+        if: env.changes == 'true' 
+        run: |
+          docker build -t ${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }} ./${{ matrix.service }}
+      
+      - name: Tag Docker Image for ACR
+        if: env.changes == 'true' 
+        run: |
+          docker tag ${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}  ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
+  
+      - name: Push Docker Image to ACR
+        if: env.changes == 'true' 
+        run: |
+          docker push ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
+           
+
+# Deploy to Azure Kubernetes Cluster
+  Deploy_To_AKS:
+    runs-on: ubuntu-latest
+    needs: [ Deploy_To_ACR , Deploy_To_DockerHub ]
+    strategy:
+      matrix:
+        include: # Map a specific service to its corresponding docker_image_name
+          - service: 'Books'
+            docker_image_name: 'books'
+          - service: 'Movies'
+            docker_image_name: 'movies'
+          - service: 'News'
+            docker_image_name: 'news'
+          - service: 'Universities'
+            docker_image_name: 'universities' 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full commit history, not a shallow clone
+        
+      - name: Check for changes in microservice
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
+            echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+
+      - name: Install Azure CLI
+        if: env.changes == 'true' 
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      # Use kubelogin to configure your kubeconfig for Azure auth
+      - name: Set up kubelogin for non-interactive login
+        if: env.changes == 'true' 
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+        
+      # Login to Azure using the service principal credentials
+      - name: Azure Login -> Creds
+        if: env.changes == 'true' 
+        uses: azure/login@v2
+        with:
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+      
+      # Just to test if github action returns secrets in clear
+      - name: Azure CLI script -> Account show
+        if: env.changes == 'true' 
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
+        
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+      - name: Get K8s context
+        if: env.changes == 'true' 
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+      
+      # Install kubectl manually
+      - name: Install kubectl
+        if: env.changes == 'true'
+        run: |
+          sudo az aks install-cli
+
+      # Get Nodes - test
+      - name: Get Nodes
+        if: env.changes == 'true'
+        run: |
+          kubectl get nodes
+      
+      # ECHO - test
+      - name: Get Nodes
+        if: env.changes == 'true'
+        run: |
+          echo  "--------------------------------"
+          echo  "--------------------------------"
+          
+
+      # Replace the placeholders in the Kubernetes manifest with the actual ACR URL, image name, and tag
+      - name: Replace image placeholders in deployment.yml
+        if: env.changes == 'true'
+        run: |
+          sed -i 's|ACR_URL_PLACEHOLDER|${{ env.ACR_URL }}|g' ./${{ matrix.service }}/k8s/deployment.yml
+          sed -i 's|IMAGE_NAME_PLACEHOLDER|${{ matrix.docker_image_name }}-microservice|g' ./${{ matrix.service }}/k8s/deployment.yml
+          sed -i 's|IMAGE_TAG_PLACEHOLDER|${{ env.DOCKER_IMAGE_TAG }}|g' ./${{ matrix.service }}/k8s/deployment.yml
+      
+      # ECHO Deployment.yml - Display Content of Manifest
+      - name: Echo Deployment Manifest
+        if: env.changes == 'true'
+        run: |
+          echo "Displaying the content of the deployment manifest for ${{ matrix.service }}:"
+          cat ./${{ matrix.service }}/k8s/deployment.yml
+
+      # Deploys application based on given manifest file
+      #- name: Deploys application
+      #  if: env.changes == 'true' 
+      #  uses: Azure/k8s-deploy@v4
+      #  with:
+      #    action: deploy
+      #    manifests: ./${{ matrix.service }}/k8s/deployment.yml
+
+      #- name: Wait for the deployment to complete
+      #  run: |
+      #    kubectl rollout status deployment/${{ matrix.service }} --watch
+      #
+      #- name: Get deployment status
+      #  run: |
+      #    kubectl get deployment/${{ matrix.service }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+
+
+ 
+
+
+
+
+
+
+
+
+      
