@@ -302,12 +302,12 @@ jobs:
           cat ./${{ matrix.service }}/k8s/deployment.yml
 
       # Deploys application based on given manifest file
-      - name: Deploys application
-        if: env.changes == 'true' 
-        uses: Azure/k8s-deploy@v4
-        with:
-          action: deploy
-          manifests: ./${{ matrix.service }}/k8s/deployment.yml
+      #- name: Deploys application
+      #  if: env.changes == 'true' 
+      #  uses: Azure/k8s-deploy@v4
+      #  with:
+      #    action: deploy
+      #    manifests: ./${{ matrix.service }}/k8s/deployment.yml
 
       #- name: Wait for the deployment to complete
       #  run: |
