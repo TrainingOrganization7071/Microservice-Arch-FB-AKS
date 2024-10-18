@@ -11,11 +11,10 @@ on:
     
   
 env:
-  DOCKER_EMAIL: 'fouadallaoui70@gmail.com'
   DOCKER_IMAGE_TAG: 'latest'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
-  ACR_URL: 'containerRegistry1rpalsoxm.azurecr.io' # ACR service url
+  ACR_URL: 'containerRegistry1tqgsqhql.azurecr.io' # ACR service url
 
 
 
@@ -282,12 +281,12 @@ jobs:
       #      --docker-password=${{ secrets.ACR_PASSWORD }} \
       #      --docker-email=${{ env.DOCKER_EMAIL }}
            
-      # Replace image placeholders in deployment.yml
-      - name: Replace image placeholders in deployment.yml
-        if: env.changes == 'true'
-        run: |
-          sed -i 's|ACR_URL_PLACEHOLDER|${{ secrets.ACR_URL }}|g' ./${{ matrix.service }}/k8s/deployment.yml
-          sed -i 's|IMAGE_TAG_PLACEHOLDER|${{ env.DOCKER_IMAGE_TAG }}|g' ./${{ matrix.service }}/k8s/deployment.yml
+      ## Replace image placeholders in deployment.yml
+      #- name: Replace image placeholders in deployment.yml
+      #  if: env.changes == 'true'
+      #  run: |
+      #    sed -i 's|ACR_URL_PLACEHOLDER|${{ secrets.ACR_URL }}|g' ./${{ matrix.service }}/k8s/deployment.yml
+      #    sed -i 's|IMAGE_TAG_PLACEHOLDER|${{ env.DOCKER_IMAGE_TAG }}|g' ./${{ matrix.service }}/k8s/deployment.yml
 
       # Deploys application based on given manifest file
       - name: Deploys application
