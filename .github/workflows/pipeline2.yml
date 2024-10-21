@@ -1,4 +1,4 @@
-name: CI/CD Microservices Pipeline
+name: Optimized CI/CD Microservices Pipeline
 
 on:
   push:
@@ -8,14 +8,13 @@ on:
     branches:
       - master
   workflow_dispatch:
-    
+  
   
 env:
   DOCKER_IMAGE_TAG: 'latest'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
-  ACR_URL: 'containerregistry1sitcfvhr.azurecr.io' # ACR service url
-
+  ACR_URL: 'containerregistry1xgmoeanz.azurecr.io' # ACR service url
 
 
 jobs:
@@ -64,20 +63,14 @@ jobs:
         run: |
           cd ./${{ matrix.service }}
           npm run build --if-present
-        
-      #- name: Run Tests
-      #  if: env.changes == 'true' 
-      #  run: |
-      #    cd ./${{ matrix.service }}
-      #    npm run test
       
       # Upload the build artifacts
-      #- name: Upload build artifact for ${{ matrix.service }}
-      #  if: env.changes == 'true' 
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: ${{ matrix.service }}-build
-      #    path: ./${{ matrix.service }}
+      - name: Upload build artifact for ${{ matrix.service }}
+        if: env.changes == 'true' 
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.service }}-build
+          path: ./${{ matrix.service }}
 
 
 # Deploy All Microservice docker images to ACR
@@ -122,30 +115,20 @@ jobs:
           login-server: ${{ env.ACR_URL }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-        
-      #- name: Set up Docker Buildx
-      #  if: env.changes == 'true' 
-      #  uses: docker/setup-buildx-action@v2
-      #  with:
-      #    push: true
-      #    tag: ${{ env.DOCKER_IMAGE_TAG }}
-      #    file: ./${{ matrix.service }}/Dockerfile
 
-      - name: Build Docker Image
+      # Display the content of the Dockerfile
+      - name: Display Dockerfile content
         if: env.changes == 'true' 
-        run: |
-          docker build -t ${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }} ./${{ matrix.service }}
-      
-      - name: Tag Docker Image for ACR
+        run: cat./${{ matrix.service }}/Dockerfile
+
+      - name: Set up Docker Buildx
         if: env.changes == 'true' 
-        run: |
-          docker tag ${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}  ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
-  
-      - name: Push Docker Image to ACR
-        if: env.changes == 'true' 
-        run: |
-          docker push ${{ env.ACR_URL }}/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
-           
+        uses: docker/setup-buildx-action@v2
+        with:
+          push: true
+          tag: ${{ env.DOCKER_IMAGE_TAG }}
+          file: ./${{ matrix.service }}/Dockerfile
+
 
 # Deploy to Azure Kubernetes Cluster
   Deploy_To_AKS:
@@ -195,16 +178,8 @@ jobs:
         uses: azure/login@v2
         with:
           creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
-      
-      # Just to test if github action returns secrets in clear
-      - name: Azure CLI script -> Account show
-        if: env.changes == 'true' 
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
-        
+
+          
       # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
       - name: Get K8s context
         if: env.changes == 'true' 
@@ -228,9 +203,11 @@ jobs:
           kubectl get nodes
       
       # ECHO - test
-      - name: Get Nodes
+      - name: ECHO
         if: env.changes == 'true'
         run: |
+          echo  "--------------------------------"
+          echo  "--------------------------------"
           echo  "--------------------------------"
           echo  "--------------------------------"
           
@@ -258,13 +235,7 @@ jobs:
       #    action: deploy
       #    manifests: ./${{ matrix.service }}/k8s/deployment.yml
 
-      #- name: Wait for the deployment to complete
-      #  run: |
-      #    kubectl rollout status deployment/${{ matrix.service }} --watch
-      #
-      #- name: Get deployment status
-      #  run: |
-      #    kubectl get deployment/${{ matrix.service }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+
 
 
  
