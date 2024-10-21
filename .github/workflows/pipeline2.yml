@@ -119,7 +119,8 @@ jobs:
       # Display the content of the Dockerfile
       - name: Display Dockerfile content
         if: env.changes == 'true' 
-        run: cat./${{ matrix.service }}/Dockerfile
+        run: |
+           cat ./${{ matrix.service }}/Dockerfile
 
       - name: Set up Docker Buildx
         if: env.changes == 'true' 
