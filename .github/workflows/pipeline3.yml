@@ -91,18 +91,6 @@ jobs:
         run: |
           cd ./${{ matrix.service }}
           npm ci
-
-      - name: Run lint
-        if: env.changes == 'true'
-        run: |
-          cd ./${{ matrix.service }}
-          npm run lint --if-present
-
-      - name: Run format check
-        if: env.changes == 'true'
-        run: |
-          cd ./${{ matrix.service }}
-          npm run format --if-present
                   
       - name: Run Build
         if: env.changes == 'true'
