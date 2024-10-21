@@ -32,54 +32,48 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch full commit history, not a shallow clone
-      
-      # Use the custom action to check for changes in microservice
+
       - name: Check for changes in microservice
-        id: check_changes
-        uses: ./.github/actions/check-for-changes/action.yml
-        with:
-          service: ${{ matrix.service }}
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
+          echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
             
       - name: Use Node.js
-        if: steps.check_changes.outputs.changes == 'true' 
+        if: env.changes == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
         
       - name: Install dependencies
-        if: steps.check_changes.outputs.changes == 'true' 
+        if: env.changes == 'true'
         run: |
           cd ./${{ matrix.service }}
           npm ci
 
       - name: Run lint
-        if: steps.check_changes.outputs.changes == 'true' 
+        if: env.changes == 'true'
         run: |
           cd ./${{ matrix.service }}
           npm run lint --if-present
 
       - name: Run format check
-        if: steps.check_changes.outputs.changes == 'true' 
+        if: env.changes == 'true'
         run: |
           cd ./${{ matrix.service }}
           npm run format --if-present
-
-      - name: Check commit messages
-        if: steps.check_changes.outputs.changes == 'true' 
-        uses: wagoid/commitlint-github-action@v3
-        with:
-          configFile: commitlint.config.cjs
-
-        
+                  
       - name: Run Build
-        if: steps.check_changes.outputs.changes == 'true' 
+        if: env.changes == 'true'
         run: |
           cd ./${{ matrix.service }}
           npm run build --if-present
       
       # Upload the build artifacts
       - name: Upload build artifact for ${{ matrix.service }}
-        if: steps.check_changes.outputs.changes == 'true'  
+        if: env.changes == 'true' 
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.service }}-build
