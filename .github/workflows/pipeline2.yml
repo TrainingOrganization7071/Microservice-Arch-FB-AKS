@@ -236,7 +236,7 @@ jobs:
       - name: Force Redeploy by Adding Annotation
         if: env.changes == 'true'
         run: |
-          sed -i "s|REDEPLOY_TIMESTAMP_PLACEHOLDER|$(date +%s)|g" ./${{ matrix.service }}/k8s/deployment.y
+          sed -i "s|REDEPLOY_TIMESTAMP_PLACEHOLDER|$(date +%s)|g" ./${{ matrix.service }}/k8s/deployment.yml
 
       # ECHO Deployment.yml - Display Content of Manifest
       - name: Echo Deployment Manifest
