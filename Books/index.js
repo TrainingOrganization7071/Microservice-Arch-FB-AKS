@@ -21,7 +21,7 @@ var apiURL = "https://www.abibliadigital.com.br/api/books"
 
 
 app.get('/', (req, res) => {
-    res.send('Hello, world <---> Books Microservice 7070!');
+    res.send('Hello, world <---> Books Microservice ---!');
 });
 
 // Fetch all books from the external API

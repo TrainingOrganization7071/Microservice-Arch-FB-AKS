@@ -11,7 +11,7 @@ on:
   
   
 env:
-  DOCKER_IMAGE_TAG: 'latest'
+  DOCKER_IMAGE_TAG: '${{ github.sha }}'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
   ACR_NAME: 'containerRegistry1xvvkszxu' # ACR service name
@@ -222,7 +222,6 @@ jobs:
         run: |
           echo  "--------------------------------"
           echo  "--------------------------------"
-          
 
       # Replace the placeholders in the Kubernetes manifest with the actual ACR URL, image name, and tag
       - name: Replace image placeholders in deployment.yml
@@ -231,11 +230,6 @@ jobs:
           sed -i 's|ACR_URL_PLACEHOLDER|${{ env.ACR_NAME }}.azurecr.io|g' ./${{ matrix.service }}/k8s/deployment.yml
           sed -i 's|IMAGE_NAME_PLACEHOLDER|${{ matrix.docker_image_name }}-microservice|g' ./${{ matrix.service }}/k8s/deployment.yml
           sed -i 's|IMAGE_TAG_PLACEHOLDER|${{ env.DOCKER_IMAGE_TAG }}|g' ./${{ matrix.service }}/k8s/deployment.yml
-      
-      #Add Annotation for timestamp & Force a Redeployment by Changing the Deployment Definition    
-      - name: Force Redeploy by Adding Annotation
-        if: env.changes == 'true'
-        run: |
           sed -i "s|REDEPLOY_TIMESTAMP_PLACEHOLDER|$(date +%s)|g" ./${{ matrix.service }}/k8s/deployment.yml
 
       # ECHO Deployment.yml - Display Content of Manifest
@@ -253,7 +247,19 @@ jobs:
           action: deploy
           manifests: ./${{ matrix.service }}/k8s/deployment.yml
           force: true  # Force redeployment even if deployment already exists
-          #kubectl rollout restart deployment/books-deployment
+
+      # Fetch detailed deployment logs
+      - name: Get Deployment Logs
+        if: env.changes == 'true'
+        run: |
+          kubectl describe deployment ${{ matrix.docker_image_name }}-deployment --v=6
+          kubectl logs deployment/${{ matrix.docker_image_name }}-deployment --v=6
+
+      # Force a rolling restart of the deployment to ensure new pods are started
+      #- name: Force Rolling Restart
+      #  if: env.changes == 'true'
+      #  run: |
+      #    kubectl rollout restart deployment ${{ matrix.docker_image_name }}-deployment
 
       # Step 4: Deploy to AKS
       #- name: Deploy to AKS
