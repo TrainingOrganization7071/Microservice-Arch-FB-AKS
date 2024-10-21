@@ -1,13 +1,13 @@
 name: Optimized CI/CD Microservices Pipeline
 
 on:
-  #push:
-  #  paths: ./Books , ./Movies , ./News , ./Universities
-  #  branches:
-  #    - master
-  #pull_request:
-  #  branches:
-  #    - master
+  push:
+    #paths: ./Books , ./Movies , ./News , ./Universities
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
   
   
