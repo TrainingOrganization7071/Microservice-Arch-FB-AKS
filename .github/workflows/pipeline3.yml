@@ -53,6 +53,7 @@ jobs:
 
 # Build and test all Microservices 
   Build:
+    needs: Detect_Changes
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -65,6 +66,12 @@ jobs:
         with:
           fetch-depth: 0  # Fetch full commit history, not a shallow clone
 
+      - name: Load changed services
+        id: load_services
+        run: |
+          changed_services="${{ needs.Detect_Changes.outputs.changed_services }}"
+          echo "Changed services: $changed_services"
+          
       - name: Check for changes in microservice
         run: |
           if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
