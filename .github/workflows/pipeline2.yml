@@ -14,7 +14,7 @@ env:
   DOCKER_IMAGE_TAG: 'latest'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
-  ACR_NAME: 'containerregistry1xgmoeanz' # ACR service name
+  ACR_NAME: 'containerRegistry1xvvkszxu' # ACR service name
 
 
 jobs:
