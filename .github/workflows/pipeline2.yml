@@ -65,12 +65,12 @@ jobs:
           npm run build --if-present
       
       # Upload the build artifacts
-      - name: Upload build artifact for ${{ matrix.service }}
-        if: env.changes == 'true' 
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.service }}-build
-          path: ./${{ matrix.service }}
+      #- name: Upload build artifact for ${{ matrix.service }}
+      #  if: env.changes == 'true' 
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: ${{ matrix.service }}-build
+      #    path: ./${{ matrix.service }}
 
 
 # Deploy All Microservice docker images to ACR
@@ -237,12 +237,12 @@ jobs:
           cat ./${{ matrix.service }}/k8s/deployment.yml
 
       # Deploys application based on given manifest file
-      #- name: Deploys application
-      #  if: env.changes == 'true' 
-      #  uses: Azure/k8s-deploy@v4
-      #  with:
-      #    action: deploy
-      #    manifests: ./${{ matrix.service }}/k8s/deployment.yml
+      - name: Deploys application
+        if: env.changes == 'true' 
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests: ./${{ matrix.service }}/k8s/deployment.yml
 
 
       # Step 4: Deploy to AKS
