@@ -66,6 +66,18 @@ jobs:
         with:
           fetch-depth: 0  # Fetch full commit history, not a shallow clone
 
+
+
+
+      # Use the custom action to check for changes in microservice
+      - name: Check for changes in microservice
+        id: check_changes
+        uses: ./.github/actions/check-changes
+        with:
+          service: ${{ matrix.service }}
+
+
+
       - name: Load changed services
         id: load_services
         run: |
