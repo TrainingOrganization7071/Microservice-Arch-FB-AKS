@@ -246,6 +246,7 @@ jobs:
         with:
           action: deploy
           manifests: ./${{ matrix.service }}/k8s/deployment.yml
+          force: true  # Force redeployment even if deployment already exists
 
 
       # Step 4: Deploy to AKS

@@ -20,6 +20,7 @@ spec:
     spec:
       containers:
       - name: booksserver
+        imagePullPolicy: Always
         image: ACR_URL_PLACEHOLDER/IMAGE_NAME_PLACEHOLDER:IMAGE_TAG_PLACEHOLDER
         ports:
         - containerPort: 3001
