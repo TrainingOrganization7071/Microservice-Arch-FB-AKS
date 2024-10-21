@@ -19,6 +19,38 @@ env:
 
 
 jobs:
+  
+  Detect_Changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full commit history, not a shallow clone
+
+      # Load microservices list from JSON
+      - name: Load microservices from JSON
+        id: load_services
+        run: |
+          services=$(cat microservices.json | jq -r '.microservices[] | .name')
+          echo "Services: $services"
+          echo "::set-output name=services::$services"
+
+      # Find which microservices have changed
+      - name: Detect changed microservices
+        id: detect_changes
+        run: |
+          services=$(cat microservices.json | jq -r '.microservices[] | .name')
+          changed_services=""
+          for service in $services; do
+            if git diff --name-only HEAD^ HEAD | grep -q "^$service/"; then
+              changed_services="$changed_services $service"
+            fi
+          done
+          echo "Changed microservices: $changed_services"
+          echo "::set-output name=changed_services::$changed_services"
+
 # Build and test all Microservices 
   Build:
     runs-on: ubuntu-latest

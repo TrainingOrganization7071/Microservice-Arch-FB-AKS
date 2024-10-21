@@ -1,19 +1,20 @@
-[
+{
+  "microservices": [
     {
-      "service": "Books",
+      "name": "Books",
       "docker_image_name": "books"
     },
     {
-      "service": "Movies",
+      "name": "Movies",
       "docker_image_name": "movies"
     },
     {
-      "service": "News",
+      "name": "News",
       "docker_image_name": "news"
     },
     {
-      "service": "Universities",
+      "name": "Universities",
       "docker_image_name": "universities"
     }
   ]
-  
+}
