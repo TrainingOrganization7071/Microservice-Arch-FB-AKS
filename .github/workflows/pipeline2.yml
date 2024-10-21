@@ -137,7 +137,7 @@ jobs:
         run: |
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ matrix.docker_image_name }}-microservice:${{ env.DOCKER_IMAGE_TAG }}
               
-
+#az aks update -n <aks-cluster-name> -g <resource-group-name> --attach-acr <acr-name>
 # Deploy to Azure Kubernetes Cluster
   Deploy_To_AKS:
     runs-on: ubuntu-latest
