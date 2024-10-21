@@ -205,10 +205,10 @@ jobs:
           sudo az aks install-cli
 
       #az aks update -n <aks-cluster-name> -g <resource-group-name> --attach-acr <acr-name>
-      - name: Update ACR in AKS
-        if: env.changes == 'true' 
-        run: |
-          az aks update -n ${{ env.CLUSTER_NAME }} -g ${{ env.RESOURCE_GROUP }} --attach-acr ${{ env.ACR_NAME }}
+      #- name: Update ACR in AKS
+      #  if: env.changes == 'true' 
+      #  run: |
+      #    az aks update -n ${{ env.CLUSTER_NAME }} -g ${{ env.RESOURCE_GROUP }} --attach-acr ${{ env.ACR_NAME }}
 
       # Get Nodes - test
       - name: Get Nodes
