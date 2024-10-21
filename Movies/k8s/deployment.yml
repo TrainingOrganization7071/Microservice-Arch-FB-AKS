@@ -8,6 +8,9 @@ metadata:
   name: movies-deployment
   labels:
     app: movies
+  annotations:
+    redeploy-timestamp: "REDEPLOY_TIMESTAMP_PLACEHOLDER"  # Placeholder for dynamic replaceme
+
 spec:
   replicas: 3
   selector:
@@ -20,21 +23,23 @@ spec:
     spec:
       containers:
       - name: moviesserver
-        image: fouadallaoui/movies-microservice:latest
+        imagePullPolicy: Always
+        image: ACR_URL_PLACEHOLDER/IMAGE_NAME_PLACEHOLDER:IMAGE_TAG_PLACEHOLDER
         ports:
         - containerPort: 3004
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3004
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 3004
-          initialDelaySeconds: 10
-          periodSeconds: 5
+
+        #livenessProbe:
+        #  httpGet:
+        #    path: /health
+        #    port: 3004
+        #  initialDelaySeconds: 30
+        #  periodSeconds: 10
+        #readinessProbe:
+        #  httpGet:
+        #    path: /ready
+        #    port: 3004
+        #  initialDelaySeconds: 10
+        #  periodSeconds: 5
 
 ---
 apiVersion: v1
