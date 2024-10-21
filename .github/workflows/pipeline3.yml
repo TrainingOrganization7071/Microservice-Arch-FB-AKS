@@ -33,41 +33,34 @@ jobs:
         with:
           fetch-depth: 0  # Fetch full commit history, not a shallow clone
 
-      #- name: Check for changes in microservice
-      #  id: check_changes
-      #  uses: ./.github/workflows/action.yml
-      #  with:
-      #    service: ${{ matrix.service }}
-
+      # Use the custom action to check for changes in microservice
       - name: Check for changes in microservice
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.service }}/"; then
-            echo "changes=true" >> $GITHUB_ENV
-          else
-            echo "changes=false" >> $GITHUB_ENV
-          fi
+        id: check_changes
+        uses: ./.github/workflows/action.yml
+        with:
+          service: ${{ matrix.service }}
 
       - name: Use Node.js
-        if: env.changes == 'true' 
+        if: steps.check_changes.outputs.changes == 'true' 
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
         
       - name: Install dependencies
-        if: env.changes == 'true' 
+        if: steps.check_changes.outputs.changes == 'true'
         run: |
           cd ./${{ matrix.service }}
           npm ci
         
       - name: Run Build
-        if: env.changes == 'true' 
+        if: steps.check_changes.outputs.changes == 'true'
         run: |
           cd ./${{ matrix.service }}
           npm run build --if-present
       
       # Upload the build artifacts
       - name: Upload build artifact for ${{ matrix.service }}
-        if: env.changes == 'true' 
+        if: steps.check_changes.outputs.changes == 'true' 
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.service }}-build
