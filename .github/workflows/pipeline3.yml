@@ -33,7 +33,7 @@ jobs:
       - name: Load microservices from JSON
         id: load_services
         run: |
-          services=$(cat microservices.json | jq -r '.microservices[] | .name')
+          services=$(cat ./.github/workflows/microservices.json | jq -r '.microservices[] | .name')
           echo "Services: $services"
           echo "::set-output name=services::$services"
 
@@ -41,7 +41,7 @@ jobs:
       - name: Detect changed microservices
         id: detect_changes
         run: |
-          services=$(cat microservices.json | jq -r '.microservices[] | .name')
+          services=$(cat ./.github/workflows/microservices.json | jq -r '.microservices[] | .name')
           changed_services=""
           for service in $services; do
             if git diff --name-only HEAD^ HEAD | grep -q "^$service/"; then
