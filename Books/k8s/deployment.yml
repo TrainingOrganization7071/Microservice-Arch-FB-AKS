@@ -8,6 +8,9 @@ metadata:
   name: books-deployment
   labels:
     app: books
+  annotations:
+    redeploy-timestamp: "REDEPLOY_TIMESTAMP_PLACEHOLDER"  # Placeholder for dynamic replaceme
+
 spec:
   replicas: 3
   selector:

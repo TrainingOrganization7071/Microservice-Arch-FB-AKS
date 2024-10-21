@@ -232,6 +232,12 @@ jobs:
           sed -i 's|IMAGE_NAME_PLACEHOLDER|${{ matrix.docker_image_name }}-microservice|g' ./${{ matrix.service }}/k8s/deployment.yml
           sed -i 's|IMAGE_TAG_PLACEHOLDER|${{ env.DOCKER_IMAGE_TAG }}|g' ./${{ matrix.service }}/k8s/deployment.yml
       
+      #Add Annotation for timestamp & Force a Redeployment by Changing the Deployment Definition    
+      - name: Force Redeploy by Adding Annotation
+        if: env.changes == 'true'
+        run: |
+          sed -i "s|REDEPLOY_TIMESTAMP_PLACEHOLDER|$(date +%s)|g" ./${{ matrix.service }}/k8s/deployment.y
+
       # ECHO Deployment.yml - Display Content of Manifest
       - name: Echo Deployment Manifest
         if: env.changes == 'true'
@@ -247,7 +253,7 @@ jobs:
           action: deploy
           manifests: ./${{ matrix.service }}/k8s/deployment.yml
           force: true  # Force redeployment even if deployment already exists
-
+          #kubectl rollout restart deployment/books-deployment
 
       # Step 4: Deploy to AKS
       #- name: Deploy to AKS
