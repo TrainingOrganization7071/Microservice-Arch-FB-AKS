@@ -15,7 +15,7 @@ env:
   DOCKER_IMAGE_TAG: '${{ github.sha }}'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
-  ACR_NAME: 'containerRegistry1fbfhvqxw' # ACR service name
+  ACR_NAME: 'containerRegistry1cixqitly' # ACR service name
 
 
 jobs:
@@ -114,12 +114,12 @@ jobs:
           npm run build --if-present
       
       # Upload the build artifacts
-      - name: Upload build artifact for ${{ matrix.service }}
-        if: env.changes == 'true' 
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.service }}-build
-          path: ./${{ matrix.service }}
+      #- name: Upload build artifact for ${{ matrix.service }}
+      #  if: env.changes == 'true' 
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: ${{ matrix.service }}-build
+      #    path: ./${{ matrix.service }}
 
 
 # Deploy All Microservice docker images to ACR
