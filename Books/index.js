@@ -17,7 +17,7 @@ app.listen(port, () => {
 })
 
 
-var apiURL = "https://www.abibliadigital.com.br/api/books"
+var apiURL = "https://openlibrary.org/people/mekBot/books/want-to-read.json"
 
 
 app.get('/', (req, res) => {
