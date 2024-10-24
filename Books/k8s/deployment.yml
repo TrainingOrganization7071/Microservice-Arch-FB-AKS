@@ -28,11 +28,6 @@ spec:
         ports:
         - containerPort: 3001
 
-
-      
-      #imagePullSecrets:
-      #- name: acr-secret  # This tells AKS to use the ACR secret for pulling the image form the ACR
-
         #livenessProbe:
         #  httpGet:
         #    path: /health
