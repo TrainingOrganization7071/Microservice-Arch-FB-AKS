@@ -21,7 +21,7 @@ var apiURL = "https://openlibrary.org/people/mekBot/books/want-to-read.json"
 
 
 app.get('/', (req, res) => {
-    res.send('Hello, world <---> Books Microservice 7071!');
+    res.send('Hello, world <---> Books Microservice -7071-!');
 });
 
 // Fetch all books from the external API
