@@ -8,9 +8,13 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 
 spec:
+
   ingressClassName: nginx-internal-static
+
   rules:
-  - http:
+  - host: internal.privatelink.apimanagement.azure.com
+    
+    http:
       paths:
 
       - path: /app1(/|$)(.*)
