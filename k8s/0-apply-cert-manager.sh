@@ -6,7 +6,7 @@ kubectl get all --namespace cert-manager
 
 echo '\n ################################### \n ################################### \n'
 
-kubectl apply -f 1-nginx-internal-controller.yml
+kubectl apply -f 1-nginx-internal-controller.yaml
 
 sleep 30
 
@@ -18,25 +18,26 @@ echo '\n #########-- Record the Nginx internal controller in the DNS --#########
 
 echo '\n Waitting ... \n'
 
-read 
+#read 
+#
+#echo '\n ################################### \n ################################### \n'
+#
+#kubectl apply -f 2-cluster-issuer.yaml
+#
+#sleep 15
+#
+#kubectl get clusterissuer -owide
+#
+#echo '\n ################################### \n ################################### \n'
+#
+#kubectl apply -f 3-ingress-internal.yaml
+#
+#sleep 30
+#
+#kubectl get ingress -owide  
+#
+#echo '\n ################################### \n ################################### \n'
 
-echo '\n ################################### \n ################################### \n'
-
-kubectl apply -f 2-cluster-issuer.yaml
-
-sleep 15
-
-kubectl get clusterissuer -owide
-
-echo '\n ################################### \n ################################### \n'
-
-kubectl apply -f 3-ingress-internal.yaml
-
-sleep 30
-
-kubectl get ingress -owide  
-
-echo '\n ################################### \n ################################### \n'
 
 
 

@@ -6,17 +6,17 @@ metadata:
   name: webapi
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
-    cert-manager.io/cluster-issuer: letsencrypt-production  # Or letsencrypt-staging for testin
+    #cert-manager.io/cluster-issuer: letsencrypt-production  # Or letsencrypt-staging for testin
 
 spec:
 
   ingressClassName: nginx-internal-static
   # The TLS secret name will be used by Ingress Controller to secure the Ingress traffic
   # This secret should be created by Cert-Manager and referenced here
-  tls:
-  - hosts:
-    - internal.privatelink.apimanagement.azure.com
-    secretName: webapi-tls  # This is where Cert-Manager will store the TLS certificate
+  #tls:
+  #- hosts:
+  #  - internal.privatelink.apimanagement.azure.com
+  #  secretName: webapi-tls  # This is where Cert-Manager will store the TLS certificate
 
   rules:
   - host: internal.privatelink.apimanagement.azure.com
