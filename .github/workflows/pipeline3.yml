@@ -86,7 +86,15 @@ jobs:
           else
             echo "changes=false" >> $GITHUB_ENV
           fi
-            
+      
+      # End the job if env.changes == 'false'    
+      - name: End job if no changes
+        if: env.changes == 'false'
+        continue-on-error: true
+        run: |
+          echo "No changes detected in ${{ matrix.service }}. Skipping build and test."
+          exit 0
+      
       - name: Use Node.js
         if: env.changes == 'true'
         uses: actions/setup-node@v4
