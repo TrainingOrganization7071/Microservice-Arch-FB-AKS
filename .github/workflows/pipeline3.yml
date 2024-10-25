@@ -83,7 +83,8 @@ jobs:
       #  uses: ./.github/actions/check-changes
       #  with:
       #    service: ${{ matrix.service }}
-
+      
+      # Load changed microservices
       - name: Load changed services
         id: load_services
         run: |
@@ -167,7 +168,18 @@ jobs:
           else
             echo "changes=false" >> $GITHUB_ENV
           fi
+        
+      # Load changed services 
+      - name: Load changed services
+        id: load_services
+        run: |
+          changed_services="${{ needs.Detect_Changes.outputs.changed_services }}"
+          echo "Changed services: $changed_services"
           
+      - name: Get Tag
+        id: vars
+        run: echo ::set-output name=tag::${git describe --abbrev=0}
+
       - name: Azure ACR [Docker Rejistry] Login
         if: env.changes == 'true' 
         uses: azure/docker-login@v1
