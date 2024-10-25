@@ -29,25 +29,36 @@ jobs:
         with:
           fetch-depth: 0  # Fetch full commit history, not a shallow clone
 
-      # Load microservices list from JSON
+      # Load microservices and docker image names from JSON
       - name: Load microservices from JSON
         id: load_services
         run: |
-          services=$(cat ./.github/workflows/microservices.json | jq -r '.microservices[] | .name')
+          # Load service names and docker image names into single-line, comma-separated strings
+          services=$(jq -r '.microservices[] | .name' ./.github/workflows/microservices.json | paste -sd "," -)
+          docker_images=$(jq -r '.microservices[] | .docker_image_name' ./.github/workflows/microservices.json | paste -sd "," -)
+          
+          # Output both values as single-line strings
           echo "Services: $services"
+          echo "Docker Images: $docker_images"
           echo "services=$services" >> $GITHUB_OUTPUT
+          echo "docker_images=$docker_images" >> $GITHUB_OUTPUT
 
-      # Find which microservices have changed
+      # Detect which microservices have changed
       - name: Detect changed microservices
         id: detect_changes
         run: |
-          services=$(cat ./.github/workflows/microservices.json | jq -r '.microservices[] | .name')
+          services=$(jq -r '.microservices[] | .name' ./.github/workflows/microservices.json)
           changed_services=""
+
+          # Check each service for changes
           for service in $services; do
             if git diff --name-only HEAD^ HEAD | grep -q "^$service/"; then
               changed_services="$changed_services $service"
             fi
           done
+          
+          # Format changed_services as a single-line, comma-separated string
+          changed_services=$(echo "$changed_services" | xargs | tr ' ' ',')
           echo "Changed microservices: $changed_services"
           echo "changed_services=$changed_services" >> $GITHUB_OUTPUT
 
