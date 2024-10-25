@@ -15,7 +15,7 @@ env:
   DOCKER_IMAGE_TAG: '${{ github.sha }}'
   RESOURCE_GROUP: 'minimal_infra_auth'
   CLUSTER_NAME: 'aks-cluster'
-  ACR_NAME: 'containerRegistry1cixqitly' # ACR service name
+  ACR_NAME: 'containerRegistry1ajwjgkbx' # ACR service name
 
 
 jobs:
