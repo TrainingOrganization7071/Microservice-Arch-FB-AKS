@@ -35,7 +35,7 @@ jobs:
         run: |
           services=$(cat ./.github/workflows/microservices.json | jq -r '.microservices[] | .name')
           echo "Services: $services"
-          echo "::set-output name=services::$services"
+          echo "services=$services" >> $GITHUB_OUTPUT
 
       # Find which microservices have changed
       - name: Detect changed microservices
@@ -49,7 +49,7 @@ jobs:
             fi
           done
           echo "Changed microservices: $changed_services"
-          echo "::set-output name=changed_services::$changed_services"
+          echo "changed_services=$changed_services" >> $GITHUB_OUTPUT
 
 # Build and test all Microservices 
   Build:
