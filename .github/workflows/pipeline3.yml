@@ -176,9 +176,9 @@ jobs:
           changed_services="${{ needs.Detect_Changes.outputs.changed_services }}"
           echo "Changed services: $changed_services"
           
-      - name: Get Tag
-        id: vars
-        run: echo ::set-output name=tag::${git describe --abbrev=0}
+      - name: Set tag output
+        run: |
+          echo "tag=$(git describe --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Azure ACR [Docker Rejistry] Login
         if: env.changes == 'true' 
