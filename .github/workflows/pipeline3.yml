@@ -62,6 +62,11 @@ jobs:
           echo "Changed microservices: $changed_services"
           echo "changed_services=$changed_services" >> $GITHUB_OUTPUT
 
+      # list pull requests count
+      - name: Set tag output
+        run: |
+          echo "tag=$(git rev-list --merges --count master)" >> $GITHUB_OUTPUT
+
 # Build and test all Microservices 
   Build:
     needs: Detect_Changes
@@ -168,14 +173,7 @@ jobs:
           else
             echo "changes=false" >> $GITHUB_ENV
           fi
-        
-      # Load changed services 
-      - name: Load changed services
-        id: load_services
-        run: |
-          changed_services="${{ needs.Detect_Changes.outputs.changed_services }}"
-          echo "Changed services: $changed_services"
-          
+
       - name: Azure ACR [Docker Rejistry] Login
         if: env.changes == 'true' 
         uses: azure/docker-login@v1
